@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>韩语小星球 🌸</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC','Noto Sans KR',sans-serif;background:#FFFAF7;color:#4A4A6A;line-height:1.7;font-size:16px}
+:root{--pink:#FFB5C2;--pink-light:#FFE0E6;--pink-dark:#E8929F;--lavender:#B8B5FF;--lavender-light:#E8E6FF;--lavender-dark:#9A96E0;--mint:#B5E8C3;--mint-light:#DFF5E5;--bg:#FFFAF7;--card:#FFFFFF;--shadow:0 2px 10px rgba(184,181,255,0.10);--shadow-up:0 4px 20px rgba(184,181,255,0.18);--text:#4A4A6A;--text-light:#8888A8;--text-dark:#2D2D4A;--radius:12px;--radius-sm:8px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:240px;min-width:240px;background:var(--card);border-right:1px solid var(--pink-light);overflow-y:auto;position:sticky;top:0;height:100vh;padding:14px 10px}
+.sidebar .logo{padding:4px 10px 12px;border-bottom:1px solid var(--pink-light);margin-bottom:10px}
+.sidebar .logo .t{font-size:18px;font-weight:700;color:var(--text-dark)}
+.sidebar .logo .t span{background:linear-gradient(135deg,var(--pink),var(--lavender));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar .logo .sub{font-size:12px;color:var(--text-light)}
+.sidebar .sec{margin-bottom:2px}
+.sidebar .sec .hd{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:600;color:var(--text-dark);transition:var(--transition)}
+.sidebar .sec .hd:hover{background:var(--pink-light)}
+.sidebar .sec .hd .ar{font-size:10px;color:var(--text-light);transition:var(--transition)}
+.sidebar .sec .hd .ar.open{transform:rotate(90deg)}
+.sidebar .sec .days{display:none;padding-left:8px}
+.sidebar .sec .days.open{display:block}
+.sidebar .sec .days .d{display:flex;align-items:center;gap:4px;padding:5px 10px 5px 20px;border-radius:5px;cursor:pointer;font-size:12px;color:var(--text);transition:var(--transition)}
+.sidebar .sec .days .d:hover{background:var(--lavender-light)}
+.sidebar .sec .days .d.active{background:linear-gradient(135deg,var(--pink-light),var(--lavender-light));font-weight:600}
+.sidebar .sec .days .d .ck{font-size:10px;margin-left:auto;color:var(--mint-dark)}
+.sidebar .tools{margin-top:14px;padding:10px;border-top:1px solid var(--pink-light)}
+.sidebar .tools .tt{font-size:12px;font-weight:600;color:var(--text-light);margin-bottom:4px}
+.sidebar .tools a{display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:5px;font-size:12px;color:var(--text);text-decoration:none;transition:var(--transition)}
+.sidebar .tools a:hover{background:var(--lavender-light)}
+.main{flex:1;min-width:0}
+.topbar{background:var(--card);padding:12px 24px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 1px 8px rgba(184,181,255,0.10)}
+.topbar .left{display:flex;align-items:center;gap:14px}
+.topbar .day-num{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--pink),var(--lavender));color:white;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;box-shadow:0 3px 10px rgba(184,181,255,0.25)}
+.topbar .info .day{font-size:18px;font-weight:600;color:var(--text-dark)}
+.topbar .info .phase{font-size:12px;color:var(--lavender-dark);background:var(--lavender-light);padding:2px 14px;border-radius:20px}
+.topbar .stats{display:flex;gap:18px}
+.topbar .stats .s{text-align:center;min-width:38px}
+.topbar .stats .s .n{font-size:20px;font-weight:700;color:var(--pink-dark);display:block}
+.topbar .stats .s .l{font-size:11px;color:var(--text-light)}
+.prog{padding:0 24px 10px;background:var(--card);border-bottom:1px solid var(--pink-light)}
+.prog .bar{height:4px;background:var(--pink-light);border-radius:2px;overflow:hidden}
+.prog .bar .fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--lavender));border-radius:2px;transition:width 0.4s ease}
+.prog .lbl{font-size:12px;color:var(--text-light);text-align:right;margin-top:2px}
+.content{max-width:800px;padding:20px 24px 60px}
+.quote{background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));border-left:4px solid var(--lavender);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:14px;font-size:14px;font-style:italic}
+.streak{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.streak .lb{font-size:13px;font-weight:600;color:var(--text-dark);flex-shrink:0}
+.streak .dots{display:flex;gap:4px}
+.streak .dot{width:28px;height:28px;border-radius:50%;font-size:10px;font-weight:500;background:var(--lavender-light);border:2px solid transparent;display:flex;align-items:center;justify-content:center;color:var(--text-light)}
+.streak .dot.done{background:linear-gradient(135deg,var(--pink),var(--lavender));color:white}
+.streak .dot.today{border-color:var(--lavender);box-shadow:0 0 0 3px var(--lavender-light)}
+.iu-card{background:linear-gradient(135deg,var(--card),#FFF5F5);border:2px solid var(--pink-light);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.iu-card .icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--pink),var(--lavender));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.iu-card .info{flex:1;min-width:0}
+.iu-card .info .t{font-size:15px;font-weight:600;color:var(--text-dark)}
+.iu-card .info .st{font-size:12px;color:var(--text-light)}
+.iu-card .btns{display:flex;gap:6px}
+.iu-card .btns a,.iu-card .btns button{padding:5px 14px;border-radius:16px;border:none;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:var(--transition);text-decoration:none}
+.iu-card .btns .pink-btn{background:linear-gradient(135deg,var(--pink),var(--lavender));color:white}
+.iu-card .btns .pink-btn:hover{transform:scale(1.05)}
+.iu-card .btns .lv-btn{background:var(--lavender-light);color:var(--text-dark)}
+.iu-card .btns .lv-btn:hover{background:var(--lavender);color:white}
+.iu-lyrics{display:none;background:var(--card);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:13px;border:1px solid var(--pink-light);line-height:1.8}
+.task-head{font-size:13px;font-weight:600;color:var(--text-dark);margin:10px 0 6px;display:flex;align-items:center;gap:6px}
+.task{background:var(--card);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow);margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;transition:var(--transition);border-left:4px solid var(--lavender)}
+.task:hover{box-shadow:var(--shadow-up)}
+.task.video{border-left-color:var(--pink)}
+.task.practice{border-left-color:var(--mint)}
+.task.iu{border-left-color:#FFD700;background:linear-gradient(135deg,var(--card),#FFFDF0)}
+.task.guess{border-left-color:var(--lavender)}
+.task .cb{appearance:none;width:20px;height:20px;min-width:20px;border:2px solid var(--lavender);border-radius:50%;cursor:pointer;position:relative;flex-shrink:0;margin-top:2px;transition:var(--transition)}
+.task .cb:checked{background:linear-gradient(135deg,var(--pink),var(--lavender));border-color:transparent}
+.task .cb:checked::after{content:'✓';color:white;font-size:12px;font-weight:700;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.task .body{flex:1;min-width:0}
+.task .body .lb{font-size:15px;color:var(--text)}
+.task .body .lb.done{text-decoration:line-through;color:var(--text-light)}
+.task .body .tip{font-size:12px;color:var(--text-light);margin-top:2px}
+.task .body .links{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.task .body .links a{display:inline-flex;align-items:center;gap:3px;font-size:12px;padding:3px 10px;border-radius:12px;text-decoration:none;transition:var(--transition);background:var(--lavender-light);color:var(--lavender-dark)}
+.task .body .links a:hover{background:var(--lavender);color:white}
+.task .body .links a.pink{background:var(--pink-light);color:var(--pink-dark)}
+.task .body .links a.pink:hover{background:var(--pink);color:white}
+.task .body .links a.green{background:var(--mint-light);color:var(--mint-dark)}
+.task .body .links a.green:hover{background:var(--mint);color:white}
+.day-sum{font-size:14px;color:var(--text);background:var(--card);border-radius:var(--radius-sm);padding:12px 16px;box-shadow:var(--shadow);margin-bottom:12px;border-left:4px solid var(--lavender)}
+.journal{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-top:18px}
+.journal .tt{font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:8px}
+.journal textarea{width:100%;min-height:56px;border:2px solid var(--pink-light);border-radius:var(--radius-sm);padding:10px;font-size:14px;font-family:inherit;color:var(--text);resize:vertical;outline:none;transition:var(--transition);background:var(--bg)}
+.journal textarea:focus{border-color:var(--lavender)}
+.journal .sv{margin-top:6px;padding:5px 18px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--pink),var(--lavender));color:white;font-size:13px;font-weight:500;cursor:pointer;transition:var(--transition);font-family:inherit}
+.journal .sv:hover{transform:scale(1.03)}
+.journal .saved{font-size:12px;color:var(--mint-dark);display:none;margin-left:8px}
+.footer{text-align:center;padding:20px;color:var(--text-light);font-size:12px}
+.stats-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:900;justify-content:center;align-items:flex-start;padding-top:40px;backdrop-filter:blur(4px)}
+.stats-overlay.open{display:flex}
+.stats-modal{background:var(--card);border-radius:var(--radius);padding:28px 24px;max-width:540px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.stats-modal h2{font-size:20px;font-weight:700;color:var(--text-dark);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.stats-modal .sub{font-size:13px;color:var(--text-light);margin-bottom:14px}
+.stats-modal .anki-rec{background:var(--yellow-light);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;line-height:1.6}
+.stats-modal .anki-rec a{color:var(--lavender-dark);font-weight:600}
+.stats-modal .total-bar{background:var(--lavender-light);border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.stats-modal .total-bar .name{font-size:15px;font-weight:700;color:var(--text-dark)}
+.stats-modal .total-bar .time{font-size:22px;font-weight:700;color:var(--lavender-dark)}
+.stats-modal .sc{margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stats-modal .sc .c{background:var(--pink-light);border-radius:10px;padding:12px 14px;text-align:center}
+.stats-modal .sc .c .n{font-size:14px;font-weight:600;color:var(--text-dark)}
+.stats-modal .sc .c .t{font-size:18px;font-weight:700;color:var(--pink-dark)}
+.stats-modal .dl{margin-top:6px}
+.stats-modal .dl .r{display:flex;justify-content:space-between;padding:7px 8px;border-bottom:1px solid var(--pink-light);font-size:13px;cursor:pointer;border-radius:4px}
+.stats-modal .dl .r:hover{background:var(--lavender-light)}
+.stats-modal .dl .r .dy{color:var(--text-dark);font-weight:500}
+.stats-modal .dl .r .tm{color:var(--text-light)}
+.stats-modal .dl .r .ok{color:var(--mint-dark);font-weight:600}
+.stats-modal .cl-btn{margin-top:16px;padding:8px 24px;border-radius:20px;border:none;background:var(--lavender);color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:block;margin-left:auto}
+.stats-modal .cl-btn:hover{background:var(--lavender-dark)}
+.float-timer{position:fixed;bottom:20px;right:20px;z-index:500;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.float-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--lavender));color:white;border:none;font-size:18px;cursor:pointer;box-shadow:0 4px 16px rgba(184,181,255,0.35);transition:var(--transition);display:flex;align-items:center;justify-content:center;position:relative}
+.float-btn .badge{position:absolute;top:-3px;right:-3px;background:var(--pink-dark);color:white;font-size:9px;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.float-panel{display:none;background:var(--card);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,0.15);width:240px;overflow:hidden}
+.float-panel.open{display:block}
+.float-panel .ph{background:linear-gradient(135deg,var(--pink),var(--lavender));color:white;padding:10px 12px;text-align:center}
+.float-panel .ph .t{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.float-panel .pb{padding:8px}
+.float-panel .sg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
+.float-panel .sg button{padding:5px;border-radius:6px;border:2px solid var(--pink-light);background:var(--card);cursor:pointer;text-align:center;font-family:inherit;font-size:10px}
+.float-panel .sg button.active{border-color:var(--pink);background:var(--pink-light)}
+.float-panel .ctl{display:flex;gap:4px;margin-bottom:6px}
+.float-panel .ctl button{flex:1;padding:5px;border-radius:14px;border:none;font-size:11px;font-weight:600;cursor:pointer}
+.float-panel .ctl .go{background:var(--lavender);color:white}
+.float-panel .ctl .re{background:var(--pink-light);color:var(--pink-dark)}
+.float-panel .st{font-size:10px;color:var(--text-light)}
+.float-panel .st .r{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--pink-light)}
+.float-panel .st .r .v{font-weight:600;color:var(--text-dark)}
+.float-panel .cl{text-align:center;padding:4px 0;font-size:10px;color:var(--text-light);cursor:pointer}
+.confetti-c{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
+.confetti{position:absolute;font-size:18px;animation:cf 1.5s ease-out forwards}
+@keyframes cf{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(100px) rotate(720deg);opacity:0}}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--pink-light);border-radius:2px}
+@media(max-width:860px){.sidebar{width:200px;min-width:200px}.content{padding:16px 16px 60px}}
+@media(max-width:640px){.app{flex-direction:column}.sidebar{width:100%;min-width:0;height:auto;position:static;padding:10px}}
+</style>
+</head>
+<body>
+
+<!-- Stats Modal -->
+<div class="stats-overlay" id="statsOverlay">
+  <div class="stats-modal">
+    <h2>📊 学习统计</h2>
+    <div class="sub">计时器各分区时长 + 每日任务完成记录</div>
+    <div class="anki-rec">🗂️ <strong>推荐Anki词包：</strong><a href="https://ankiweb.net/shared/info/3614346923" target="_blank">Korean Grammar Sentences by Evita</a> — 最受欢迎的韩语句型词包 ✅</div>
+    <div class="total-bar"><span class="name">📊 总学习时间</span><span class="time" id="statsTotal">0m</span></div>
+    <div class="sc" id="statsSC"></div>
+    <div style="font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:4px;">📅 每日完成</div>
+    <div class="dl" id="statsDL"></div>
+    <button class="cl-btn" onclick="closeStats()">关闭</button>
+  </div>
+</div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo"><div class="t"><span>韩语小星球</span></div><div class="sub">零基础到自由追星 💜</div></div>
+    <div id="sidebarNav"></div>
+    <div class="tools">
+      <div class="tt">🎧 常用工具</div>
+      <a href="https://www.youtube.com/@GoBillyKorean" target="_blank">🇺🇸 Go! Billy Korean</a>
+      <a href="https://www.youtube.com/@talktomeinkorean" target="_blank">🇰🇷 TTMIK</a>
+      <a href="https://papago.naver.com" target="_blank">🗣️ Papago</a>
+      <a href="https://www.youtube.com/channel/UCQ2O-iftmnlfrBuNsUUTofQ" target="_blank">🎬 채널십오야(地球游戏厅)</a>
+      <a href="https://ankiweb.net/shared/info/3614346923" target="_blank" style="color:var(--mint-dark);font-weight:600;">🗂️ Anki词包</a>
+      <a href="#" onclick="showStats();return false;" style="color:var(--pink-dark);font-weight:600;">📊 学习统计</a>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="left">
+        <div class="day-num" id="dayNum">1</div>
+        <div class="info">
+          <div class="day" id="dayLabel">第 1 天</div>
+          <span class="phase" id="phasePill">🌱 字母爆破期</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="s"><span class="n" id="doneCount">0</span><span class="l">已学</span></div>
+        <div class="s"><span class="n" id="todoCount">4</span><span class="l">待学</span></div>
+        <div class="s"><span class="n" style="color:var(--lavender-dark)" id="streakCount">0</span><span class="l">🔥连续</span></div>
+      </div>
+    </div>
+
+    <div class="prog">
+      <div class="bar"><div class="fill" id="progFill" style="width:0%"></div></div>
+      <div class="lbl" id="progLabel">0 / 4 完成</div>
+    </div>
+
+    <div class="content">
+      <!-- Quote -->
+      <div class="quote" id="quoteBox"></div>
+
+      <!-- Streak -->
+      <div class="streak"><span class="lb">🔥 本周</span><div class="dots" id="streakRow"></div></div>
+
+      <!-- IU Card (simple, no autoplay) -->
+      <div class="iu-card">
+        <div class="icon">🌸</div>
+        <div class="info">
+          <div class="t">💜 IU 歌曲学韩语</div>
+          <div class="st" id="iuNowPlaying">IU - Blueming</div>
+        </div>
+        <div class="btns">
+          <a class="pink-btn" href="https://www.youtube.com/results?search_query=IU+%EA%B0%80%EC%82%AC+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B3%B5%EB%B6%80" target="_blank">🎵 听歌</a>
+          <button class="lv-btn" onclick="showIULyrics()">📝 歌词</button>
+        </div>
+      </div>
+      <div class="iu-lyrics" id="iuLyricsBox"></div>
+
+      <!-- Summary -->
+      <div class="day-sum" id="daySummary"></div>
+
+      <!-- Tasks -->
+      <div id="tasksContainer"></div>
+
+      <!-- Journal -->
+      <div class="journal">
+        <div class="tt">📝 学习记录</div>
+        <textarea id="journalInput" placeholder="今天学了什么？有什么不懂的？"></textarea>
+        <div><button class="sv" onclick="saveJournal()">💾 保存</button><span class="saved" id="journalSaved">✅ 已保存</span></div>
+      </div>
+    </div>
+
+    <div class="footer"><p>🌸 学习的每一天，都是离idol更近的一步 💜</p></div>
+  </div>
+</div>
+
+<!-- Float Timer -->
+<div class="float-timer">
+  <div class="float-panel" id="floatPanel">
+    <div class="ph"><div class="t" id="panT">00:00</div><div class="m" id="panM">⏸</div></div>
+    <div class="pb">
+      <div class="sg">
+        <button class="active" data-s="listening" onclick="selS('listening')">🎧<span style="font-size:7px;display:block" id="st-l">0m</span></button>
+        <button data-s="reading" onclick="selS('reading')">📖<span style="font-size:7px;display:block" id="st-r">0m</span></button>
+        <button data-s="vocab" onclick="selS('vocab')">📝<span style="font-size:7px;display:block" id="st-v">0m</span></button>
+        <button data-s="speaking" onclick="selS('speaking')">🎤<span style="font-size:7px;display:block" id="st-s">0m</span></button>
+      </div>
+      <div class="ctl"><button class="go" id="panGo" onclick="togT()">▶</button><button class="re" onclick="resS()">↺</button></div>
+      <div class="st">
+        <div class="r"><span>🎧</span><span class="v" id="s-l">0</span></div>
+        <div class="r"><span>📖</span><span class="v" id="s-r">0</span></div>
+        <div class="r"><span>📝</span><span class="v" id="s-v">0</span></div>
+        <div class="r"><span>🎤</span><span class="v" id="s-s">0</span></div>
+        <div class="r" style="font-weight:600;color:var(--text-dark)"><span>📊</span><span class="v" id="s-t">0</span></div>
+      </div>
+      <div class="cl" onclick="document.getElementById('floatPanel').classList.remove('open')">↑</div>
+    </div>
+  </div>
+  <button class="float-btn" onclick="document.getElementById('floatPanel').classList.toggle('open')">⏱<span class="badge" id="timerBadge">0</span></button>
+</div>
+
+<script>
+// ===== CURRICULUM =====
+const Q=['"언어는 그 문화를 사랑하는 사람이 가장 빨리 배운다." --- 语言，是热爱那个文化的人学得最快。','"하루에 10분씩 해도 1년이면 3650분이다."','"처음에는 서툴러도 괜찮아. 계속하면 늘어."','"A new language is a new life."','"Your idol is waiting for you to understand them 💜"'];
+const WD=['一','二','三','四','五','六','日'];
+
+const DAYS = {
+1:{ph:'🌱 字母爆破期',sum:'👋 完全零基础？今天学한글字母！',ts:[
+  {id:'d1t1',tp:'video',lb:'📺 Learn Hangul in 90 Minutes',tip:'从头看到尾，边看边暂停跟读',lk:[{t:'▶️ Billy Korean',u:'https://www.youtube.com/watch?v=s5aobqyEaMQ',c:'pink'}]},
+  {id:'d1t2',tp:'practice',lb:'✍️ Papago上输入字母→听发音→跟读',tip:'打字→点🔊→跟读3遍',lk:[{t:'🗣️ Papago',u:'https://papago.naver.com',c:'green'}]},
+  {id:'d1t3',tp:'iu',lb:'🌸 听IU歌感受韩语调调',tip:'随便听一首就行，不要求懂',lk:[{t:'🎵 IU歌单',u:'https://www.youtube.com/results?search_query=IU+%EA%B0%80%EC%82%AC+%ED%95%9C%EA%B5%AD%EC%96%B4',c:'pink'}]},
+  {id:'d1t4',tp:'guess',lb:'🎬 看一集地球游戏厅（中字）',tip:'听不懂没关系，感受语调+找找刚学的字母',lk:[{t:'🌍 B站搜中字',u:'https://search.bilibili.com/all?keyword=%E5%9C%B0%E7%90%83%E6%B8%B8%E6%88%8F%E5%8E%85+%E4%B8%AD%E5%AD%97',c:'pink'}]}
+]},
+2:{ph:'🌱 字母爆破期',sum:'复习字母，开始拼读！',ts:[
+  {id:'d2t1',tp:'video',lb:'📺 TTMIK 10分钟快速读韩文',tip:'快速复习巩固字母',lk:[{t:'▶️ TTMIK',u:'https://www.youtube.com/watch?v=b6YxGs2NBqY',c:'pink'}]},
+  {id:'d2t2',tp:'practice',lb:'🔤 练习拼读：가나다라마바사아자차카타파하',tip:'每天读5分钟形成肌肉记忆',lk:[{t:'🗣️ Papago听',u:'https://papago.naver.com',c:'green'}]},
+  {id:'d2t3',tp:'iu',lb:'🌸 IU Blueming歌词读读看',tip:'"뭐해?"(干嘛) "보고 싶어"(想你)',lk:[{t:'🎵 IU Blueming',u:'https://www.youtube.com/results?search_query=IU+Blueming+%EB%AE%A4%EC%A7%81%EB%B9%84%EB%94%94%EC%98%A4',c:'pink'}]},
+  {id:'d2t4',tp:'guess',lb:'🎬 地球游戏厅（韩字+中字对照）',tip:'观察韩文字幕形状',lk:[{t:'🌍 B站',u:'https://search.bilibili.com/all?keyword=%E5%9C%B0%E7%90%83%E6%B8%B8%E6%88%8F%E5%8E%85+%E4%B8%AD%E5%AD%97',c:'pink'}]}
+]},
+3:{ph:'🌱 字母爆破期',sum:'学完所有한글！今天解锁韩文读写🔓',ts:[
+  {id:'d3t1',tp:'video',lb:'📺 Billy Hangul Part 7-14 (收音+音变)',tip:'学完这几个视频你就能读任何韩文了',lk:[{t:'▶️ Billy Korean',u:'https://www.youtube.com/watch?v=s5aobqyEaMQ',c:'pink'}]},
+  {id:'d3t2',tp:'video',lb:'📺 Miss Vicky收音讲解',tip:'받침(收音)是读准韩语的关键',lk:[{t:'▶️ Miss Vicky',u:'https://www.youtube.com/watch?v=g9sNHwU0gK4',c:'pink'}]},
+  {id:'d3t3',tp:'iu',lb:'🌸 IU "좋은 날"歌词读出来',tip:'能读出来就赢了！🎉',lk:[{t:'🎵 IU 좋은날',u:'https://www.youtube.com/results?search_query=IU+%EC%A2%8B%EC%9D%80%EB%82%A0+%EB%AE%A4%EC%A7%81%EB%B9%84%EB%94%94%EC%98%A4',c:'pink'}]},
+  {id:'d3t4',tp:'guess',lb:'🎬 地球游戏厅+韩字字幕',tip:'试试读出你看到的韩文字',lk:[{t:'🌍 B站',u:'https://search.bilibili.com/all?keyword=%E5%9C%B0%E7%90%83%E6%B8%B8%E6%88%8F%E5%8E%85+%E4%B8%AD%E5%AD%97',c:'pink'}]}
+]},
+4:{ph:'🌱 语法入门期',sum:'学问候语+理解韩语和英语语序的不同',ts:[
+  {id:'d4t1',tp:'video',lb:'📺 TTMIK L1L1: 你好谢谢再见',tip:'地球游戏厅每集都在说这些！',lk:[{t:'▶️ TTMIK L1L1',u:'https://www.youtube.com/watch?v=rQNlHnACkW4',c:'pink'}]},
+  {id:'d4t2',tp:'video',lb:'📺 韩语SOV语序讲解（主+宾+谓）',tip:'理解"我 饭 吃"为什么是对的',lk:[{t:'▶️ Billy SOV',u:'https://www.youtube.com/watch?v=fLoT1lV1jGU',c:'pink'}]},
+  {id:'d4t3',tp:'practice',lb:'✍️ 写5句问候语并大声朗读',tip:'안녕하세요 감사합니다 네 아니요 죄송합니다',lk:[{t:'🗣️ Papago查发音',u:'https://papago.naver.com',c:'green'}]},
+  {id:'d4t4',tp:'guess',lb:'🎬 地球游戏厅找"안녕하세요"出现了几次',tip:'每集开头都会说！',lk:[{t:'🌍 B站',u:'https://search.bilibili.com/all?keyword=%E5%9C%B0%E7%90%83%E6%B8%B8%E6%88%8F%E5%8E%85+%E4%B8%AD%E5%AD%97',c:'pink'}]}
+]},
+5:{ph:'🌱 语法入门期',sum:'学이에요/예요(是...) + IU歌词里的句子',ts:[
+  {id:'d5t1',tp:'video',lb:'📺 TTMIK L1L2: 이에요/예요（是...）',tip:'自我介绍必用！地球游戏厅成员都说',lk:[{t:'▶️ TTMIK L1L2',u:'https://www.youtube.com/watch?v=HZGf8qA7Gcs',c:'pink'}]},
+  {id:'d5t2',tp:'practice',lb:'✍️ 造5句"___이에요/예요"',tip:'책이에요(是书), 저예요(是我), 학생이에요(是学生)',lk:[{t:'🗣️ Papago',u:'https://papago.naver.com',c:'green'}]},
+  {id:'d5t3',tp:'iu',lb:'🌸 IU Celebrity找"아름다워"(美丽)',tip:'"눈부시게 아름다워" (耀眼地美丽)',lk:[{t:'🎵 IU Celebrity',u:'https://www.youtube.com/results?search_query=IU+Celebrity+%EB%AE%A4%EC%A7%81%EB%B9%84%EB%94%94%EC%98%A4',c:'pink'}]},
+  {id:'d5t4',tp:'guess',lb:'🎬 地球游戏厅听"저는 ___예요"自我介绍',tip:'每个成员上来都这么说！',lk:[{t:'🌍 B站',u:'https://search.bilibili.com/all?keyword=%E5%9C%B0%E7%90%83%E6%B8%B8%E6%88%8F%E5%8E%85+%E4%B8%AD%E5%AD%97',c:'pink'}]}
+]}
+};
+
+// Generate remaining days
+for(let i=6;i<=30;i++){
+  const ph=i<=10?'🌱 语法入门期':(i<=20?'🌿 内容输入期':'🌳 自主进阶期');
+  const sum=i<=10?'继续TTMIK学语法+IU歌词+地球游戏厅':(i<=20?'看视频学更多语法+IU歌积累词汇+地球游戏厅':'自由学习阶段');
+  DAYS[i]={ph,sum,ts:[]};
+  DAYS[i].ts.push({id:'d'+i+'t1',tp:'video',lb:i<=10?'📺 TTMIK L1L'+(i-3)+' 继续语法':(i<=20?'📺 TTMIK L2L'+(i-10)+' 进阶':'📺 继续TTMIK课程'),tip:i<=20?'每天稳定推进':'自主节奏学习',lk:[{t:'▶️ TTMIK',u:'https://www.youtube.com/playlist?list=PLbFrQnW0BNMVrHEoK9IozP64qXktXHKzB',c:'pink'}]});
+  DAYS[i].ts.push({id:'d'+i+'t2',tp:'practice',lb:'📝 学20个新词+Anki复习',tip:'词汇量是听懂的关键',lk:[{t:'🗂️ Anki词包',u:'https://ankiweb.net/shared/info/3614346923',c:'green'}]});
+  const iuN=['Blueming','좋은 날','밤편지','Celebrity','에잇','라일락','금요일에 만나요','strawberry moon','Love wins all','Love Poem','너랑 나','팔레트'][(i-1)%12];
+  DAYS[i].ts.push({id:'d'+i+'t3',tp:'iu',lb:'🌸 IU - '+iuN+' 听歌找学过的词',tip:'用Papago查生词！',lk:[{t:'🎵 搜歌词',u:'https://www.youtube.com/results?search_query=IU+'+encodeURIComponent(iuN)+'+%EA%B0%80%EC%82%AC',c:'pink'}]});
+  DAYS[i].ts.push({id:'d'+i+'t4',tp:'guess',lb:'🎬 地球游戏厅 找认识的单词',tip:'记下每个听懂的词！',lk:[{t:'🌍 B站',u:'https://search.bilibili.com/all?keyword=%E5%9C%B0%E7%90%83%E6%B8%B8%E6%88%8F%E5%8E%85+%E4%B8%AD%E5%AD%97',c:'pink'}]});
+}
+
+// ===== IU LYRICS =====
+const IU_LYRICS = {
+  Blueming:{ko:"뭐해?라는 두 글자에\n네가 보고 싶어 나의 속마음을 담아",en:'"What are you doing?" I put my heart saying "I miss you"'},
+  '좋은 날':{ko:"하늘에 구름 타고\n너를 만나러 가는 길\n참 좋은 날",en:'Riding on the clouds, on my way to meet you. Such a good day.'},
+  '밤편지':{ko:"어떻게 보내느냐보다\n어떻게 생각하느냐가 중요해",en:'How you spend it matters less than how you think about it.'},
+  Celebrity:{ko:"눈부시게 아름다워\n그대로 너로 있어줘",en:"You're dazzlingly beautiful, just stay as you are."},
+  '에잇':{ko:'So are you happy now?\nFinally happy now?\n네가 없는 나는 없어',en:'So are you happy now? Finally happy now? There is no me without you.'},
+};
+function showIULyrics(){
+  const b=document.getElementById('iuLyricsBox');
+  if(b.style.display!=='none'){b.style.display='none';return;}
+  const songs=Object.keys(IU_LYRICS);
+  const n=songs[Math.floor(Math.random()*songs.length)];
+  const l=IU_LYRICS[n];
+  b.innerHTML='<strong>🎤 IU - '+n+'</strong><br><br>🇰🇷 <span style="font-family:\'Noto Sans KR\'">'+l.ko.replace(/\n/g,'<br>')+'</span><br><br>🇬🇧 '+l.en;
+  b.style.display='block';
+}
+
+// ===== STATE =====
+let st={startDate:null,missionData:{},journal:{}};
+function gt(){return new Date().toISOString().split('T')[0]}
+function sv(){try{localStorage.setItem('ksp_state',JSON.stringify(st))}catch(e){}}
+function ld(){try{const s=localStorage.getItem('ksp_state');if(s){const p=JSON.parse(s);st.startDate=p.startDate||null;st.missionData=p.missionData||{};st.journal=p.journal||{}}}catch(e){}}
+function dc(){const ds=Object.keys(st.missionData).filter(k=>k.startsWith('day-')).map(k=>parseInt(k.replace('day-',''))).filter(n=>!isNaN(n));return ds.length?Math.max(...ds):0}
+function cd(){return dc()||1}
+let sd=1;
+
+function init(){ld();ldT();if(!st.startDate){st.startDate=gt();sv()}sd=cd();renNav();goTo(sd);document.getElementById('quoteBox').textContent=Q[Math.floor(Math.random()*Q.length)]}
+
+function renNav(){
+  const nav=document.getElementById('sidebarNav');
+  const ps=[{ic:'🌱',nm:'字母爆破',s:1,e:3},{ic:'🌱',nm:'语法入门',s:4,e:10},{ic:'🌿',nm:'内容输入',s:11,e:20},{ic:'🌳',nm:'自主进阶',s:21,e:30}];
+  let h='';const n=cd();
+  for(const p of ps){
+    const o=sd>=p.s&&sd<=p.e?' open':'';
+    h+=`<div class="sec"><div class="hd" onclick="this.querySelector('.ar').classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span class="ar${o}">▶</span>${p.ic}${p.nm}</div><div class="days${o}">`;
+    for(let i=p.s;i<=Math.min(p.e,n+5);i++){
+      if(i>n+5)break;
+      const dd=st.missionData['day-'+i]||{};
+      const ts=DAYS[i].ts||[];
+      const dn=ts.filter(t=>dd[t.id]).length;
+      const all=dn>=ts.length&&ts.length>0;
+      h+=`<div class="d ${sd===i?'active':''}" onclick="goTo(${i})">第${i}天${all?'<span class="ck">✅</span>':''}</div>`;
+    }
+    h+=`</div></div>`;
+  }
+  nav.innerHTML=h;
+}
+
+function goTo(d){
+  sd=d;const cur=DAYS[d];
+  if(!cur){return;}
+  document.getElementById('dayNum').textContent=d;
+  document.getElementById('dayLabel').textContent='第 '+d+' 天';
+  document.getElementById('phasePill').textContent=cur.ph;
+  document.getElementById('daySummary').textContent=cur.sum||'';
+  document.getElementById('quoteBox').textContent=Q[(d-1)%Q.length];
+
+  const dd=st.missionData['day-'+d]||{};
+  const tasks=cur.ts||[];
+  const c=document.getElementById('tasksContainer');
+  let h='';
+  for(const t of tasks){
+    const ck=!!dd[t.id];
+    const lkHtml=(t.lk||[]).map(l=>`<a href="${l.u}" target="_blank" class="${l.c||''}">${l.t}</a>`).join('');
+    h+=`<div class="task ${t.tp||''}"><input type="checkbox" class="cb" data-day="${d}" data-task="${t.id}" onchange="upd()" ${ck?'checked':''}><div class="body"><div class="lb ${ck?'done':''}">${t.lb}</div>${t.tip?`<div class="tip">💡 ${t.tip}</div>`:''}${lkHtml?`<div class="links">${lkHtml}</div>`:''}</div></div>`;
+  }
+  c.innerHTML=h;
+  document.getElementById('journalInput').value=st.journal['day-'+d]||'';
+  document.getElementById('journalSaved').style.display='none';
+  renNav();upSt(d);renStr();
+}
+
+function upd(){
+  const d=sd;
+  if(!st.missionData['day-'+d])st.missionData['day-'+d]={};
+  document.querySelectorAll('.task .cb').forEach(cb=>{st.missionData['day-'+d][cb.dataset.task]=cb.checked;const lb=cb.closest('.task')?.querySelector('.lb');if(lb){if(cb.checked)lb.classList.add('done');else lb.classList.remove('done')}});
+  sv();upSt(d);renNav();checkDone();
+}
+
+function upSt(d){
+  const dd=st.missionData['day-'+d]||{};
+  const ts=DAYS[d]?DAYS[d].ts:[];
+  const t=ts.length,dn=Object.values(dd).filter(Boolean).length;
+  document.getElementById('doneCount').textContent=dn;
+  document.getElementById('todoCount').textContent=t-dn;
+  document.getElementById('progFill').style.width=t>0?(dn/t*100)+'%':'0%';
+  document.getElementById('progLabel').textContent=dn+'/'+t+' 完成';
+  let s=0;let i=cd();
+  while(i>=1){
+    const d2=st.missionData['day-'+i]||{};
+    const t2=DAYS[i]?DAYS[i].ts:[];
+    if(t2.length>0&&Object.values(d2).filter(Boolean).length>=t2.length){s++;i--}
+    else{if(i===cd()){i--;continue}break}
+  }
+  document.getElementById('streakCount').textContent=s;
+}
+
+function renStr(){
+  const r=document.getElementById('streakRow');const n=cd();let h='';
+  for(let i=6;i>=0;i--){const d=n-i;if(d<1){h+=`<div class="dot" style="opacity:0.2">-</div>`;continue}const dd=st.missionData['day-'+d]||{};const t=DAYS[d]?DAYS[d].ts:[];const id=t.length>0&&Object.values(dd).filter(Boolean).length>=t.length;const l=WD[new Date().getDay()===0?6:new Date().getDay()-1];h+=`<div class="dot ${id?'done':''} ${i===0?'today':''}">${l}</div>`}
+  r.innerHTML=h;
+}
+
+function saveJournal(){st.journal['day-'+sd]=document.getElementById('journalInput').value;sv();const s=document.getElementById('journalSaved');s.style.display='inline';setTimeout(()=>{s.style.display='none'},2000);}
+function checkDone(){const dd=st.missionData['day-'+sd]||{};const t=DAYS[sd]?DAYS[sd].ts:[];const d=Object.values(dd).filter(Boolean).length;if(d===t.length&&t.length>0)sf();}
+function sf(){const c=document.createElement('div');c.className='confetti-c';const es=['🌸','💜','✨','🎉','🌟','💖','🎊','💫'];for(let i=0;i<12;i++){const el=document.createElement('div');el.className='confetti';el.textContent=es[Math.floor(Math.random()*es.length)];el.style.left=Math.random()*100+'%';el.style.top='5%';el.style.animationDuration=(1+Math.random()*0.5)+'s';el.style.animationDelay=Math.random()*0.5+'s';c.appendChild(el)}document.body.appendChild(c);setTimeout(()=>c.remove(),2500);}
+
+// ===== TIMER =====
+const SECS=['listening','reading','vocab','speaking'];const SECL=['🎧听力','📖阅读','📝词汇','🎤口语'];
+let ts={activeSection:'listening',running:false,seconds:0,interval:null,sectionTimes:{listening:0,reading:0,vocab:0,speaking:0}};
+function ldT(){try{const s=localStorage.getItem('ksp_timer');if(s){const p=JSON.parse(s);ts.sectionTimes=p.sectionTimes||{listening:0,reading:0,vocab:0,speaking:0}}}catch(e){}}
+function svT(){try{localStorage.setItem('ksp_timer',JSON.stringify({sectionTimes:ts.sectionTimes}))}catch(e){}}
+function selS(s){if(ts.running)return;ts.activeSection=s;ts.seconds=0;uiT()}
+function togT(){const btn=document.getElementById('panGo');if(ts.running){ts.running=false;clearInterval(ts.interval);ts.interval=null;btn.textContent='▶';btn.classList.remove('run');document.querySelector('.float-btn').classList.remove('running');ts.sectionTimes[ts.activeSection]+=ts.seconds;ts.seconds=0;svT();uiT();upB()}else{ts.running=true;btn.textContent='■';btn.classList.add('run');document.querySelector('.float-btn').classList.add('running');ts.interval=setInterval(()=>{ts.seconds++;uiT()},1000)}}
+function resS(){if(ts.running)return;ts.sectionTimes[ts.activeSection]=0;ts.seconds=0;svT();uiT();upB()}
+function uiT(){document.querySelectorAll('.sg button').forEach(b=>b.classList.toggle('active',b.dataset.s===ts.activeSection));const t=ts.sectionTimes[ts.activeSection]+ts.seconds;const m=Math.floor(t/60),s=t%60;document.getElementById('panT').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');document.getElementById('panM').textContent=(ts.running?'▶':'⏸');['l','r','v','s'].forEach((id,i)=>{const t=ts.sectionTimes[SECS[i]];document.getElementById('st-'+id).textContent=Math.floor(t/60)+'m'});let tm=0;['l','r','v','s'].forEach((id,i)=>{const t=ts.sectionTimes[SECS[i]];const mi=Math.floor(t/60);tm+=mi;document.getElementById('s-'+id).textContent=mi+'m'});document.getElementById('s-t').textContent=tm+'m'}
+function upB(){const t=Object.values(ts.sectionTimes).reduce((a,b)=>a+b,0);document.getElementById('timerBadge').textContent=Math.floor(t/60)}
+
+// ===== STATS =====
+function showStats(){
+  document.getElementById('statsOverlay').classList.add('open');
+  const tt=Object.values(ts.sectionTimes).reduce((a,b)=>a+b,0);
+  document.getElementById('statsTotal').textContent=Math.floor(tt/60)+'m';
+  let sh='';SECS.forEach((s,i)=>{const t=ts.sectionTimes[s];sh+=`<div class="c"><div class="n">${SECL[i]}</div><div class="t">${Math.floor(t/60)}m</div></div>`});document.getElementById('statsSC').innerHTML=sh;
+  let dh='';const ds=Object.keys(st.missionData).filter(k=>k.startsWith('day-')).sort((a,b)=>parseInt(b.replace('day-',''))-parseInt(a.replace('day-','')));
+  if(ds.length===0){dh='<div style="color:var(--text-light);font-size:13px;">暂无记录</div>'}else{for(const d of ds){const day=d.replace('day-','');const dd=st.missionData[d]||{};const t=DAYS[parseInt(day)]?DAYS[parseInt(day)].ts:[];const dn=Object.values(dd).filter(Boolean).length;const all=dn>=t.length&&t.length>0;dh+=`<div class="r"><span class="dy">第${day}天</span><span class="tm">${dn}/${t.length}${all?' <span class="ok">✅完成</span>':''}</span></div>`}}
+  document.getElementById('statsDL').innerHTML=dh;
+}
+function closeStats(){document.getElementById('statsOverlay').classList.remove('open')}
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
